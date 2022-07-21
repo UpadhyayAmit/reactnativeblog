@@ -1,55 +1,24 @@
-import React, { useContext, useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Button } from 'react-native';
+import React, { useContext } from 'react';
+import { StyleSheet } from 'react-native';
 import { Context as BlogContext } from '../context/BlogContext';
-
+import BlogPostForm from '../components/BlogPostForm';
 const EditScreen = ({ navigation }) => {
-  const { state } = useContext(BlogContext);
-  const blogPost = state.find((blog) => blog.id === navigation.getParam('id'));
-  const [title, setTitle] = useState(blogPost.title);
-  const [content, setContent] = useState(blogPost.content);
+  const { state, editBlogPost } = useContext(BlogContext);
+  const id = navigation.getParam('id');
+  console.log(id);
+  const blogPost = state.find((blog) => blog.id === id);
+
   return (
-    <View>
-      <Text style={Styles.label}>Enter Title</Text>
-      <TextInput
-        style={Styles.input}
-        value={title}
-        onChangeText={(text) => {
-          setTitle(text);
-        }}
-      />
-      <Text style={Styles.label}>Enter Content</Text>
-      <TextInput
-        style={Styles.input}
-        value={content}
-        onChangeText={(text) => {
-          setContent(text);
-        }}
-      />
-      <Button
-        title="Edit Blog Post"
-        onPress={() => {
-          addBlogPost(title, content, () => {
-            navigation.navigate('Index');
-          });
-        }}
-      />
-    </View>
+    <BlogPostForm
+      initialValues={{ title: blogPost.title, content: blogPost.content }}
+      onSubmit={(title, content) => {
+        editBlogPost(title, content, id, () => {
+          navigation.pop();
+        });
+      }}
+    />
   );
 };
 
-const Styles = StyleSheet.create({
-  input: {
-    fontSize: 18,
-    borderWidth: 1,
-    borderColor: 'black',
-    marginBottom: 15,
-    margin: 5,
-    padding: 5,
-  },
-  label: {
-    fontSize: 20,
-    marginBottom: 5,
-    marginLeft: 5,
-  },
-});
+const Styles = StyleSheet.create({});
 export default EditScreen;
